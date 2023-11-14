@@ -1,0 +1,389 @@
+esphome:
+  name: esp-bt-duplo
+  friendly_name: esp-bt-duplo
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "wjSAZ1E2gY2iuR+SEDZaM8TjNobu/dhHV71hAdhgLkg="
+
+ota:
+  password: "b8298f747aa2f2a83febfbd23ebde552"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Esp-Bt-Duplo Fallback Hotspot"
+    password: "PIDdC2vienP4"
+
+captive_portal:
+
+esp32_ble_tracker:
+
+ble_client:
+  - mac_address: "B0:10:A0:C5:52:E9"
+    id: Duplo_Train_Control
+    on_connect:
+      then:
+        - lambda: |-
+            ESP_LOGD("ble_client_lambda", "Connected to Train");
+    on_disconnect:
+      then:
+        - lambda: |-
+            ESP_LOGD("ble_client_lambda", "Disconnected from Train");
+
+switch:
+  - platform: ble_client
+    ble_client_id: Duplo_Train_Control
+    name: Train
+
+button:
+  - platform: template
+    name: "Speed 1"
+    icon: mdi:play
+    on_press:
+      - logger.log: "Switch toggled"
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x0a, 0x00, 0x41, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01]
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x08, 0x00, 0x81, 0x00, 0x01, 0x51, 0x00, 0x1e]
+
+  - platform: template
+    name: "Speed 2"
+    icon: mdi:step-forward
+    on_press:
+      - logger.log: "Switch toggled"
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x0a, 0x00, 0x41, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01]
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x08, 0x00, 0x81, 0x00, 0x01, 0x51, 0x00, 0x32]
+
+  - platform: template
+    name: "Speed 3"
+    icon: mdi:step-forward-2
+    on_press:
+      - logger.log: "Switch toggled"
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x0a, 0x00, 0x41, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01]
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x08, 0x00, 0x81, 0x00, 0x01, 0x51, 0x00, 0x64]
+
+  - platform: template
+    name: "Stop"
+    on_press:
+      - logger.log: "Switch toggled"
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x0a, 0x00, 0x41, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01]
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x08, 0x00, 0x81, 0x00, 0x01, 0x51, 0x00, 0x00]
+
+  - platform: template
+    name: "Backward 1"
+    icon: mdi:step-backward
+    on_press:
+      - logger.log: "Switch toggled"
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x0a, 0x00, 0x41, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01]
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x08, 0x00, 0x81, 0x00, 0x01, 0x51, 0x00, 0xce]
+
+  - platform: template
+    name: "Backward 2"
+    icon: mdi:step-backward-2
+    on_press:
+      - logger.log: "Switch toggled"
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x0a, 0x00, 0x41, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01]
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x08, 0x00, 0x81, 0x00, 0x01, 0x51, 0x00, 0xce]
+
+  - name: "Sound: Brake"
+    icon: mdi:stop
+    platform: template
+    on_press:
+      - logger.log: "Switch toggled"
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x0a, 0x00, 0x41, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01]
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x08, 0x00, 0x81, 0x01, 0x11, 0x51, 0x01, 0x03]
+
+  - name: "Sound: depart"
+    platform: template
+    on_press:
+      - logger.log: "Switch toggled"
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x0a, 0x00, 0x41, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01]
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x08, 0x00, 0x81, 0x01, 0x11, 0x51, 0x01, 0x05]
+
+  - name: "Sound: fill water"
+    icon: mdi:water
+    platform: template
+    on_press:
+      - logger.log: "Switch toggled"
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x0a, 0x00, 0x41, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01]
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x08, 0x00, 0x81, 0x01, 0x11, 0x51, 0x01, 0x07]
+
+  - name: "Sound: horn"
+    icon: mdi:bugle
+    platform: template
+    on_press:
+      - logger.log: "Switch toggled"
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x0a, 0x00, 0x41, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01]
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x08, 0x00, 0x81, 0x01, 0x11, 0x51, 0x01, 0x09]
+
+  - name: "Sound: steam"
+    icon: mdi:kettle-steam
+    platform: template
+    on_press:
+      - logger.log: "Switch toggled"
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x0a, 0x00, 0x41, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01]
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x08, 0x00, 0x81, 0x01, 0x11, 0x51, 0x01, 0x0A]
+
+  - name: "Light: Off"
+    platform: template
+    on_press:
+      - logger.log: "Switch toggled"
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x0a, 0x00, 0x41, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01]
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x08, 0x00, 0x81, 0x11, 0x11, 0x51, 0x00, 0x00]
+
+  - name: "Light: Pink"
+    platform: template
+    on_press:
+      - logger.log: "Switch toggled"
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x0a, 0x00, 0x41, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01]
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x08, 0x00, 0x81, 0x11, 0x11, 0x51, 0x00, 0x01]
+
+  - name: "Light: Purple"
+    platform: template
+    on_press:
+      - logger.log: "Switch toggled"
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x0a, 0x00, 0x41, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01]
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x08, 0x00, 0x81, 0x11, 0x11, 0x51, 0x00, 0x02]
+
+  - name: "Light: Blue"
+    platform: template
+    on_press:
+      - logger.log: "Switch toggled"
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x0a, 0x00, 0x41, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01]
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x08, 0x00, 0x81, 0x11, 0x11, 0x51, 0x00, 0x03]
+
+  - name: "Light: Light Blue"
+    platform: template
+    on_press:
+      - logger.log: "Switch toggled"
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x0a, 0x00, 0x41, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01]
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x08, 0x00, 0x81, 0x11, 0x11, 0x51, 0x00, 0x04]
+
+  - name: "Light: Cyan"
+    platform: template
+    on_press:
+      - logger.log: "Switch toggled"
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x0a, 0x00, 0x41, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01]
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x08, 0x00, 0x81, 0x11, 0x11, 0x51, 0x00, 0x05]
+
+  - name: "Light: Green"
+    platform: template
+    on_press:
+      - logger.log: "Switch toggled"
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x0a, 0x00, 0x41, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01]
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x08, 0x00, 0x81, 0x11, 0x11, 0x51, 0x00, 0x06]
+
+  - name: "Light: Yellow"
+    platform: template
+    on_press:
+      - logger.log: "Switch toggled"
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x0a, 0x00, 0x41, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01]
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x08, 0x00, 0x81, 0x11, 0x11, 0x51, 0x00, 0x07]
+
+  - name: "Light: Orange"
+    platform: template
+    on_press:
+      - logger.log: "Switch toggled"
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x0a, 0x00, 0x41, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01]
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x08, 0x00, 0x81, 0x11, 0x11, 0x51, 0x00, 0x08]
+
+  - name: "Light: Red"
+    platform: template
+    on_press:
+      - logger.log: "Switch toggled"
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x0a, 0x00, 0x41, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01]
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x08, 0x00, 0x81, 0x11, 0x11, 0x51, 0x00, 0x09]
+
+  - name: "Light: White"
+    platform: template
+    on_press:
+      - logger.log: "Switch toggled"
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x0a, 0x00, 0x41, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01]
+      - ble_client.ble_write:
+          id: Duplo_Train_Control
+          service_uuid: 00001623-1212-efde-1623-785feabcd123
+          characteristic_uuid: 00001624-1212-efde-1623-785feabcd123
+          value: [0x08, 0x00, 0x81, 0x11, 0x11, 0x51, 0x00, 0x0A]
