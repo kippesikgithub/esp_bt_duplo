@@ -13,3 +13,4 @@ Using an ESP32 to controll the bluetooth Duplo Train
 
 ![image](https://github.com/kippesikgithub/esp_bt_duplo/assets/100353268/67f050a0-9a4d-4b69-8bd4-c310f7bf178b)
 
+Used code: https://community.home-assistant.io/t/lego-duplo-train-control-with-esphome/637816
